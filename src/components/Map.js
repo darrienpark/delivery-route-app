@@ -1,28 +1,25 @@
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import useCurrentLocation from "../hooks/use-current-location";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import classes from "./Map.module.css";
 
-const Map = () => {
-  const { currentLocation, loading } = useCurrentLocation();
-
+const Map = ({ currentLocation }) => {
   const mapOptions = {
     mapTypeControl: false,
     streetViewControl: false,
     fullscreenControl: false,
+    zoomControl: false,
+    mapId: "734f8096b3b6827e",
   };
 
   return (
     <>
-      {!loading && (
-        <GoogleMap
-          zoom={14}
-          center={currentLocation}
-          mapContainerClassName={classes["map-container"]}
-          options={mapOptions}
-        >
-          <Marker position={currentLocation}></Marker>
-        </GoogleMap>
-      )}
+      <GoogleMap
+        zoom={14}
+        center={currentLocation}
+        mapContainerClassName={classes.map}
+        options={mapOptions}
+      >
+        <MarkerF position={currentLocation}></MarkerF>
+      </GoogleMap>
     </>
   );
 };
