@@ -1,15 +1,15 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit";
 
 const initialState = {
-  currentLocation: undefined,
+  origin: undefined,
 };
 
 const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setCurrentLocation(state, action) {
-      state.currentLocation = action.payload;
+    setOrigin(state, action) {
+      state.origin = action.payload;
     },
   },
 });

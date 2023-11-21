@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { appActions } from "../store/index.js";
+import { appActions } from "../store";
 
 const useCurrentLocation = () => {
+  const [currentLocation, setCurrentLocation] = useState(undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -10,7 +11,8 @@ const useCurrentLocation = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude: lat, longitude: lng } = position.coords;
-          dispatch(appActions.setCurrentLocation({ lat, lng }));
+          setCurrentLocation({ lat, lng });
+          dispatch(appActions.setOrigin(currentLocation));
         },
         (error) => {
           console.error("Error getting geolocation:", error);
@@ -19,7 +21,9 @@ const useCurrentLocation = () => {
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
-  }, [dispatch]);
+  }, []);
+
+  return currentLocation;
 };
 
 export default useCurrentLocation;
