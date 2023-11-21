@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { appActions } from "../store";
 
 const useCurrentLocation = () => {
   const [currentLocation, setCurrentLocation] = useState(undefined);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -12,7 +9,6 @@ const useCurrentLocation = () => {
         (position) => {
           const { latitude: lat, longitude: lng } = position.coords;
           setCurrentLocation({ lat, lng });
-          dispatch(appActions.setOrigin(currentLocation));
         },
         (error) => {
           console.error("Error getting geolocation:", error);

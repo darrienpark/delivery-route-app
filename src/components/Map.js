@@ -1,5 +1,6 @@
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import classes from "./Map.module.css";
+import { useSelector } from "react-redux";
 
 const Map = ({ currentLocation }) => {
   const mapOptions = {
@@ -17,9 +18,7 @@ const Map = ({ currentLocation }) => {
         center={currentLocation}
         mapContainerClassName={classes.map}
         options={mapOptions}
-      >
-        <MarkerF position={currentLocation}></MarkerF>
-      </GoogleMap>
+      ></GoogleMap>
     </>
   );
 };

@@ -2,6 +2,7 @@ import { createSlice, configureStore } from "@reduxjs/toolkit";
 
 const initialState = {
   origin: undefined,
+  destination: undefined,
 };
 
 const appSlice = createSlice({
@@ -10,6 +11,9 @@ const appSlice = createSlice({
   reducers: {
     setOrigin(state, action) {
       state.origin = action.payload;
+    },
+    setDestination(state, action) {
+      state.destination = action.payload;
     },
   },
 });
