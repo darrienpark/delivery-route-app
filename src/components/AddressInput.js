@@ -4,9 +4,15 @@ import classes from "./AddressInput.module.css";
 import { IconButton, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/ClearOutlined";
 
-const AddressInput = ({ label, id, setAddress, clearAddress, ...props }) => {
+const AddressInput = ({
+  label,
+  id,
+  setAddress,
+  clearAddress,
+  inputRef,
+  ...props
+}) => {
   const autocompleteRef = useRef();
-  const inputRef = useRef();
 
   const handleAddressSelect = async () => {
     if (autocompleteRef.current) {

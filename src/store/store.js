@@ -32,6 +32,9 @@ const appSlice = createSlice({
     setWaypoints(state, action) {
       state.waypoints = action.payload;
     },
+    setDirections(state, action) {
+      state.directions = action.payload;
+    },
   },
 });
 

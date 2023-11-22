@@ -1,9 +1,8 @@
 import { DirectionsRenderer, GoogleMap, MarkerF } from "@react-google-maps/api";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import classes from "./Map.module.css";
 import Directions from "./Directions.js";
-import { Alert } from "@mui/material";
+import classes from "./Map.module.css";
 
 const mapOptions = {
   disableDefaultUI: true,
@@ -11,11 +10,16 @@ const mapOptions = {
   mapId: "734f8096b3b6827e",
 };
 
-const Map = ({ currentLocation }) => {
+// Default: Hong Kong center. To use Google Maps location feature, check useCurrentLocation custom hook
+const center = { lat: 22.3193, lng: 114.1694 };
+
+const Map = () => {
   const origin = useSelector((state) => state.origin?.position);
   const destination = useSelector((state) => state.destination?.position);
   const waypoints = useSelector((state) => state.waypoints);
+  const directions = useSelector((state) => state.directions);
 
+  // Effect to adjust map view according to the markers
   const mapRef = useRef();
   const onLoad = useCallback((map) => (mapRef.current = map), []);
 
@@ -44,38 +48,14 @@ const Map = ({ currentLocation }) => {
       }
       mapRef.current?.fitBounds(bounds);
     }
-    setDirections(null);
   }, [origin, destination, waypoints]);
-
-  const [directions, setDirections] = useState();
-  const fetchDirectionsHandler = () => {
-    console.log("called");
-    // eslint-disable-next-line no-undef
-    const service = new google.maps.DirectionsService();
-    service.route(
-      {
-        origin,
-        destination,
-        waypoints: waypoints?.map((position) => {
-          return { location: position, stopover: true };
-        }),
-        // eslint-disable-next-line no-undef
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === "OK" && result) {
-          setDirections(result);
-        }
-      }
-    );
-  };
 
   return (
     <>
-      <Directions fetchDirections={fetchDirectionsHandler} />
+      <Directions />
       <GoogleMap
         zoom={14}
-        center={currentLocation}
+        center={center}
         mapContainerClassName={classes.map}
         options={mapOptions}
         onLoad={onLoad}

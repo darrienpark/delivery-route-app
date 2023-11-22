@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { appActions } from "../store/store";
 
-const CalculateButton = ({ onError, fetchDirections }) => {
+const CalculateButton = ({ onError }) => {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const origin = useSelector((state) => state.origin?.fullString);
-  const destination = useSelector((state) => state.destination?.fullString);
+  const origin = useSelector((state) => state.origin);
+  const destination = useSelector((state) => state.destination);
 
   const postRoute = async (payload) => {
     // const baseUrl = "https://sg-mock-api.lalamove.com/route";
@@ -59,22 +59,17 @@ const CalculateButton = ({ onError, fetchDirections }) => {
       const data = await response.json();
 
       if (data.status === "in progress") {
-        console.log("retrying");
+        console.log("retrying...");
         return getRoute(token);
       } else if (data.status === "failure") {
         setError(data.error);
       } else {
-        console.log(data);
-        dispatch(
-          appActions.setWaypoints(
-            data.path.map((position) => {
-              return { lat: Number(position[0]), lng: Number(position[1]) };
-            })
-          )
-        );
-        fetchDirections();
+        const waypoints = data.path.map((position) => {
+          return { lat: Number(position[0]), lng: Number(position[1]) };
+        });
+        dispatch(appActions.setWaypoints(waypoints));
+        setIsLoading(false);
       }
-      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
@@ -86,7 +81,10 @@ const CalculateButton = ({ onError, fetchDirections }) => {
   }, [error, onError]);
 
   const clickHandler = async () => {
-    postRoute({ origin, destination })
+    postRoute({
+      origin: origin?.fullString,
+      destination: destination?.fullString,
+    })
       .then((token) => {
         getRoute(token);
       })
