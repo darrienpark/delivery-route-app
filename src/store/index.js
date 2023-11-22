@@ -3,6 +3,7 @@ import { createSlice, configureStore } from "@reduxjs/toolkit";
 const initialState = {
   origin: null,
   destination: null,
+  directions: null,
 };
 
 const appSlice = createSlice({

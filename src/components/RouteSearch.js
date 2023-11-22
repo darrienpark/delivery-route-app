@@ -4,7 +4,7 @@ import classes from "./MapRouteSearch.module.css";
 import { useDispatch } from "react-redux";
 import { appActions } from "../store";
 
-const RouteSearch = () => {
+const RouteSearch = ({ fetchDirections }) => {
   const dispatch = useDispatch();
 
   const setAddressHandler = (addressType, position) => {
@@ -18,16 +18,16 @@ const RouteSearch = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const fd = new FormData(event.target);
-    const data = Object.fromEntries(fd.entries());
-    console.log(data);
+    // const fd = new FormData(event.target);
+    // const data = Object.fromEntries(fd.entries());
+    fetchDirections();
   };
 
   return (
     <div className={classes["card-container"]}>
       <Card className={classes.card}>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form>
             <AddressInput
               label="Origin"
               id="origin"
@@ -47,7 +47,12 @@ const RouteSearch = () => {
 
             <Grid container justifyContent="flex-end" spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Button type="submit" variant="contained" fullWidth on>
+                <Button
+                  type="button"
+                  variant="contained"
+                  fullWidth
+                  onClick={handleSubmit}
+                >
                   Calculate Route
                 </Button>
               </Grid>
