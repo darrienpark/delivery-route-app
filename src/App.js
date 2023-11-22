@@ -1,7 +1,7 @@
 import { useJsApiLoader } from "@react-google-maps/api";
 import Map from "./components/Map";
-import OverlaySpinner from "./components/UI/OverlaySpinner";
-import useCurrentLocation from "./hooks/use-current-location";
+import OverlaySpinner from "./components/OverlaySpinner";
+import useCurrentLocation from "./hooks/useCurrentLocation";
 
 const libraries = ["places"];
 
