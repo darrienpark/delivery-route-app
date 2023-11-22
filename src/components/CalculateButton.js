@@ -12,8 +12,8 @@ const CalculateButton = ({ onError }) => {
   const destination = useSelector((state) => state.destination);
 
   const postRoute = async (payload) => {
-    // const baseUrl = "https://sg-mock-api.lalamove.com/route";
-    const baseUrl = "https://sg-mock-api.lalamove.com/mock/route/success";
+    const baseUrl = "https://sg-mock-api.lalamove.com/route";
+    // const baseUrl = "https://sg-mock-api.lalamove.com/mock/route/success";
 
     setIsLoading(true);
     setError(undefined);
@@ -41,8 +41,8 @@ const CalculateButton = ({ onError }) => {
   };
 
   const getRoute = async (token) => {
-    // const baseUrl = `https://sg-mock-api.lalamove.com/route/${token}`;
-    const baseUrl = "https://sg-mock-api.lalamove.com/mock/route/success";
+    const baseUrl = `https://sg-mock-api.lalamove.com/route/${token}`;
+    // const baseUrl = "https://sg-mock-api.lalamove.com/mock/route/success";
 
     try {
       const response = await fetch(baseUrl, {
@@ -68,8 +68,8 @@ const CalculateButton = ({ onError }) => {
           return { lat: Number(position[0]), lng: Number(position[1]) };
         });
         dispatch(appActions.setWaypoints(waypoints));
-        setIsLoading(false);
       }
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
