@@ -17,42 +17,62 @@ const Map = () => {
   const origin = useSelector((state) => state.origin?.position);
   const destination = useSelector((state) => state.destination?.position);
   const waypoints = useSelector((state) => state.waypoints);
-  const directions = useSelector((state) => state.directions);
+  const [directions, setDirections] = useState();
 
-  // Effect to adjust map view according to the markers
+  /**
+   * Effect to adjust map view according to the markers
+   */
   const mapRef = useRef();
   const onLoad = useCallback((map) => (mapRef.current = map), []);
 
   useEffect(() => {
     if (origin && !destination) {
       mapRef.current?.panTo(origin);
+      mapRef.current?.setZoom(14);
     }
     if (!origin && destination) {
       mapRef.current?.panTo(destination);
+      mapRef.current?.setZoom(14);
     }
     if (origin && destination) {
       const bounds = new window.google.maps.LatLngBounds();
-      [origin, destination].forEach((marker) => {
+      let markers = [origin, destination];
+      if (waypoints) {
+        const waypointPositions = waypoints.map((waypoint) => {
+          return { lat: waypoint.location.lat, lng: waypoint.location.lng };
+        });
+        console.log(waypointPositions);
+        markers = [...markers, ...waypointPositions];
+      }
+
+      markers.forEach((marker) => {
         bounds.extend({
           lat: marker.lat,
           lng: marker.lng,
         });
       });
-      if (waypoints) {
-        waypoints.forEach((marker) => {
-          bounds.extend({
-            lat: marker.lat,
-            lng: marker.lng,
-          });
-        });
-      }
       mapRef.current?.fitBounds(bounds);
     }
   }, [origin, destination, waypoints]);
 
+  const onDirectionsHandler = (directions) => {
+    setDirections(directions);
+  };
+
+  const resetHandler = () => {
+    setDirections(null);
+  };
+
   return (
     <>
-      <Directions />
+      <Directions
+        origin={origin}
+        destination={destination}
+        onDirections={(directions) => {
+          onDirectionsHandler(directions);
+        }}
+        onReset={resetHandler}
+      />
       <GoogleMap
         zoom={14}
         center={center}
@@ -65,7 +85,13 @@ const Map = () => {
         {destination && <MarkerF position={destination}></MarkerF>}
         {waypoints &&
           waypoints.map((waypoint, index) => (
-            <MarkerF key={index} position={waypoint}></MarkerF>
+            <MarkerF
+              key={index}
+              position={{
+                lat: waypoint.location.lat,
+                lng: waypoint.location.lng,
+              }}
+            ></MarkerF>
           ))}
       </GoogleMap>
     </>

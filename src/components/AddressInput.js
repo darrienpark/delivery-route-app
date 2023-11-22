@@ -12,6 +12,9 @@ const AddressInput = ({
   inputRef,
   ...props
 }) => {
+  /**
+   * Retrieve the geocode from the google api using ref set onLoad
+   */
   const autocompleteRef = useRef();
 
   const handleAddressSelect = async () => {
@@ -26,7 +29,6 @@ const AddressInput = ({
   };
 
   const clearAddressHandler = () => {
-    inputRef.current.value = "";
     clearAddress();
   };
 
