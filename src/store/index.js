@@ -1,8 +1,8 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit";
 
 const initialState = {
-  origin: undefined,
-  destination: undefined,
+  origin: null,
+  destination: null,
 };
 
 const appSlice = createSlice({

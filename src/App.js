@@ -1,6 +1,5 @@
 import { useJsApiLoader } from "@react-google-maps/api";
 import Map from "./components/Map";
-import MapRouteSearch from "./components/MapRouteSearch";
 import OverlaySpinner from "./components/UI/OverlaySpinner";
 import useCurrentLocation from "./hooks/use-current-location";
 
@@ -19,7 +18,6 @@ function App() {
       {(!currentLocation || !isLoaded) && <OverlaySpinner />}
       {currentLocation && (
         <>
-          <MapRouteSearch />
           <Map currentLocation={currentLocation} />
         </>
       )}
