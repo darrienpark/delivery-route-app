@@ -5,7 +5,9 @@ import {
   Button,
   Card,
   CardContent,
+  FormControlLabel,
   Grid,
+  Switch,
 } from "@mui/material";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -154,6 +156,7 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
           destination,
           waypoints,
           travelMode: "DRIVING",
+          optimizeWaypoints: optimizeTravel,
         },
         (result, status) => {
           if (status === "OK" && result) {
@@ -171,6 +174,12 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
       setError(error.message);
       setIsLoading(false);
     }
+  };
+
+  const [optimizeTravel, setOptimizeTravel] = useState(false);
+
+  const changeHandler = () => {
+    setOptimizeTravel((prev) => !prev);
   };
 
   return (
@@ -226,6 +235,12 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
                   Calculate Route
                 </LoadingButton>
               </Grid>
+              <FormControlLabel
+                control={
+                  <Switch checked={optimizeTravel} onChange={changeHandler} />
+                }
+                label="Optimize Travel"
+              />
             </Grid>
           </form>
         </CardContent>
