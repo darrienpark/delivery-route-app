@@ -4,14 +4,7 @@ import classes from "./AddressInput.module.css";
 import { IconButton, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/ClearOutlined";
 
-const AddressInput = ({
-  label,
-  id,
-  setAddress,
-  clearAddress,
-  inputRef,
-  ...props
-}) => {
+const AddressInput = ({ label, id, setAddress, clearAddress, ...props }) => {
   /**
    * Retrieve the geocode from the google api using ref set onLoad
    */
@@ -48,7 +41,6 @@ const AddressInput = ({
               </IconButton>
             ),
           }}
-          inputRef={inputRef}
           id={id}
           name={id}
           type="text"

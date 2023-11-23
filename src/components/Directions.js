@@ -9,7 +9,7 @@ import {
   Grid,
   Switch,
 } from "@mui/material";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { appActions } from "../store/store";
 import AddressInput from "./AddressInput";
@@ -18,6 +18,9 @@ import classes from "./MapRouteSearch.module.css";
 const Directions = ({ origin, destination, onDirections, clearDirections }) => {
   const dispatch = useDispatch();
 
+  /**
+   * Form Data and Erro management
+   */
   const [formData, setFormData] = useState({
     origin: "",
     destination: "",
@@ -36,9 +39,6 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
   /**
    * Handler function and refs for resetting the form
    */
-  const originRef = useRef();
-  const destinationRef = useRef();
-
   const setOriginHandler = (addressData) => {
     clearDirections();
     dispatch(appActions.setWaypoints(null));
@@ -190,8 +190,8 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
       setError(undefined);
 
       const token = await postRoute({
-        origin: originRef.current.value,
-        destination: destinationRef.current.value,
+        origin: formData.origin,
+        destination: formData.destination,
       });
 
       const waypoints = await getRoute(token);
@@ -247,7 +247,6 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
             <AddressInput
               label="Origin"
               id="origin"
-              inputRef={originRef}
               setAddress={(addressData) => {
                 setOriginHandler(addressData);
               }}
@@ -264,7 +263,6 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
             <AddressInput
               label="Destination"
               id="destination"
-              inputRef={destinationRef}
               setAddress={(addressData) => {
                 setDestinationHandler(addressData);
               }}
