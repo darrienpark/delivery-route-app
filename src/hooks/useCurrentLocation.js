@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Custom hook to use browser location feature
+ *
+ * @returns object - current location lat, long
+ */
 const useCurrentLocation = () => {
   const [currentLocation, setCurrentLocation] = useState(undefined);
 

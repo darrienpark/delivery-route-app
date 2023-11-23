@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { appActions } from "../store/store";
 import AddressInput from "./AddressInput";
-import classes from "./MapRouteSearch.module.css";
+import classes from "./Directions.module.css";
 
 const Directions = ({ origin, destination, onDirections, clearDirections }) => {
   const dispatch = useDispatch();
@@ -39,61 +39,67 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
   /**
    * Handler function and refs for resetting the form
    */
-  const setOriginHandler = (addressData) => {
+  const setAddressHandler = (addressData, id) => {
+    // Reset stuff on screen
     clearDirections();
     dispatch(appActions.setWaypoints(null));
-    dispatch(appActions.setOrigin(addressData));
+
+    // Store address information for use in other components
+    switch (id) {
+      case "origin":
+        dispatch(appActions.setOrigin(addressData));
+        break;
+      case "destination":
+        dispatch(appActions.setDestination(addressData));
+        break;
+      default:
+        break;
+    }
+
+    // Reflect value in form
     setFormData((prevData) => ({
       ...prevData,
-      origin: addressData.fullString,
+      [id]: addressData.fullString,
     }));
+
+    // Update errors
     setFormErrors((prevErrors) => ({
       ...prevErrors,
-      origin: !formData.origin,
+      [id]: !formData[id],
     }));
   };
 
-  const setDestinationHandler = (addressData) => {
+  const clearAddressHandler = (id) => {
+    // Reset stuff on screen
     clearDirections();
     dispatch(appActions.setWaypoints(null));
-    dispatch(appActions.setDestination(addressData));
-    setFormData((prevData) => ({
-      ...prevData,
-      destination: addressData.fullString,
-    }));
-    setFormErrors((prevErrors) => ({
-      ...prevErrors,
-      destination: !formData.destination,
-    }));
-  };
 
-  const clearOriginHandler = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      origin: "",
-    }));
-    dispatch(appActions.clearOrigin());
-    dispatch(appActions.setWaypoints(null));
-    clearDirections();
-  };
+    // Clear stored value
+    switch (id) {
+      case "origin":
+        dispatch(appActions.clearOrigin());
+        break;
+      case "destination":
+        dispatch(appActions.clearDestination());
+        break;
+      default:
+        break;
+    }
 
-  const clearDestinationHandler = () => {
+    // Reflect changes in form
     setFormData((prevData) => ({
       ...prevData,
-      destination: "",
+      [id]: "",
     }));
-    dispatch(appActions.clearDestination());
-    dispatch(appActions.setWaypoints(null));
-    clearDirections();
   };
 
   const resetHandler = () => {
     dispatch(appActions.clearOrigin());
     dispatch(appActions.clearDestination());
     dispatch(appActions.setWaypoints(null));
+    clearDirections();
     setFormData({ origin: "", destination: "" });
     setError(null);
-    clearDirections();
   };
 
   /**
@@ -174,6 +180,8 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
   };
 
   const submitHandler = async () => {
+    setError(undefined);
+
     const newErrors = {
       origin: !origin,
       destination: !destination,
@@ -187,7 +195,6 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
 
     try {
       setIsLoading(true);
-      setError(undefined);
 
       const token = await postRoute({
         origin: formData.origin,
@@ -248,9 +255,11 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
               label="Origin"
               id="origin"
               setAddress={(addressData) => {
-                setOriginHandler(addressData);
+                setAddressHandler(addressData, "origin");
               }}
-              clearAddress={clearOriginHandler}
+              clearAddress={() => {
+                clearAddressHandler("origin");
+              }}
               error={formErrors.origin}
               helperText={
                 formErrors.origin
@@ -264,9 +273,11 @@ const Directions = ({ origin, destination, onDirections, clearDirections }) => {
               label="Destination"
               id="destination"
               setAddress={(addressData) => {
-                setDestinationHandler(addressData);
+                setAddressHandler(addressData, "destination");
               }}
-              clearAddress={clearDestinationHandler}
+              clearAddress={() => {
+                clearAddressHandler("destination");
+              }}
               error={formErrors.destination}
               helperText={
                 formErrors.destination

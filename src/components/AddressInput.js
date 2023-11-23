@@ -1,8 +1,8 @@
+import ClearIcon from "@mui/icons-material/ClearOutlined";
+import { IconButton, TextField } from "@mui/material";
 import { Autocomplete } from "@react-google-maps/api";
 import { useRef } from "react";
 import classes from "./AddressInput.module.css";
-import { IconButton, TextField } from "@mui/material";
-import ClearIcon from "@mui/icons-material/ClearOutlined";
 
 const AddressInput = ({ label, id, setAddress, clearAddress, ...props }) => {
   /**
