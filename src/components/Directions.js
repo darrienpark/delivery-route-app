@@ -15,8 +15,23 @@ import { appActions } from "../store/store";
 import AddressInput from "./AddressInput";
 import classes from "./MapRouteSearch.module.css";
 
-const Directions = ({ origin, destination, onDirections, onReset }) => {
+const Directions = ({ origin, destination, onDirections, clearDirections }) => {
   const dispatch = useDispatch();
+
+  const [formData, setFormData] = useState({
+    origin: "",
+    destination: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    origin: false,
+    destination: false,
+  });
+
+  const changeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   /**
    * Handler function and refs for resetting the form
@@ -25,38 +40,60 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
   const destinationRef = useRef();
 
   const setOriginHandler = (addressData) => {
-    onReset();
+    clearDirections();
     dispatch(appActions.setWaypoints(null));
     dispatch(appActions.setOrigin(addressData));
+    setFormData((prevData) => ({
+      ...prevData,
+      origin: addressData.fullString,
+    }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      origin: !formData.origin,
+    }));
   };
 
   const setDestinationHandler = (addressData) => {
-    onReset();
+    clearDirections();
     dispatch(appActions.setWaypoints(null));
     dispatch(appActions.setDestination(addressData));
+    setFormData((prevData) => ({
+      ...prevData,
+      destination: addressData.fullString,
+    }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      destination: !formData.destination,
+    }));
   };
 
   const clearOriginHandler = () => {
-    originRef.current.value = "";
+    setFormData((prevData) => ({
+      ...prevData,
+      origin: "",
+    }));
     dispatch(appActions.clearOrigin());
     dispatch(appActions.setWaypoints(null));
-    onReset();
+    clearDirections();
   };
 
   const clearDestinationHandler = () => {
-    destinationRef.current.value = "";
+    setFormData((prevData) => ({
+      ...prevData,
+      destination: "",
+    }));
     dispatch(appActions.clearDestination());
     dispatch(appActions.setWaypoints(null));
-    onReset();
+    clearDirections();
   };
 
   const resetHandler = () => {
     dispatch(appActions.clearOrigin());
     dispatch(appActions.clearDestination());
     dispatch(appActions.setWaypoints(null));
-    originRef.current.value = "";
-    destinationRef.current.value = "";
-    onReset();
+    setFormData({ origin: "", destination: "" });
+    setError(null);
+    clearDirections();
   };
 
   /**
@@ -137,6 +174,17 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
   };
 
   const submitHandler = async () => {
+    const newErrors = {
+      origin: !origin,
+      destination: !destination,
+    };
+
+    setFormErrors(newErrors);
+
+    console.log(newErrors);
+
+    if (newErrors.origin || newErrors.destination) return;
+
     try {
       setIsLoading(true);
       setError(undefined);
@@ -176,9 +224,11 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
     }
   };
 
+  /**
+   * Handle optimization of waypoints if desired. Set to false by default to preserve order
+   */
   const [optimizeTravel, setOptimizeTravel] = useState(false);
-
-  const changeHandler = () => {
+  const optimizeHandler = () => {
     setOptimizeTravel((prev) => !prev);
   };
 
@@ -202,6 +252,14 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
                 setOriginHandler(addressData);
               }}
               clearAddress={clearOriginHandler}
+              error={formErrors.origin}
+              helperText={
+                formErrors.origin
+                  ? "Please select a valid address from the dropdown."
+                  : ""
+              }
+              value={formData.origin}
+              onChange={changeHandler}
             />
             <AddressInput
               label="Destination"
@@ -211,6 +269,14 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
                 setDestinationHandler(addressData);
               }}
               clearAddress={clearDestinationHandler}
+              error={formErrors.destination}
+              helperText={
+                formErrors.destination
+                  ? "Please select a valid address from the dropdown."
+                  : ""
+              }
+              value={formData.destination}
+              onChange={changeHandler}
             />
 
             <Grid container justifyContent="flex-end" spacing={2}>
@@ -237,7 +303,7 @@ const Directions = ({ origin, destination, onDirections, onReset }) => {
               </Grid>
               <FormControlLabel
                 control={
-                  <Switch checked={optimizeTravel} onChange={changeHandler} />
+                  <Switch checked={optimizeTravel} onChange={optimizeHandler} />
                 }
                 label="Optimize Travel"
               />

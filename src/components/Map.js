@@ -59,7 +59,7 @@ const Map = () => {
     setDirections(directions);
   };
 
-  const resetHandler = () => {
+  const clearDirectionsHandler = () => {
     setDirections(null);
   };
 
@@ -71,7 +71,7 @@ const Map = () => {
         onDirections={(directions) => {
           onDirectionsHandler(directions);
         }}
-        onReset={resetHandler}
+        clearDirections={clearDirectionsHandler}
       />
       <GoogleMap
         zoom={14}

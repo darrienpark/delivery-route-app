@@ -23,7 +23,7 @@ const AddressInput = ({
       if (place.geometry) {
         const location = place.geometry.location;
         const position = { lat: location.lat(), lng: location.lng() };
-        setAddress({ fullString: inputRef.current.value, position: position });
+        setAddress({ fullString: place.formatted_address, position: position });
       }
     }
   };
